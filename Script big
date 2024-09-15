@@ -1,152 +1,117 @@
--- Define the GUI
+-- Script for Delta Executor
+-- UI for teleporting or flinging players in Brookhaven RP
+
+-- Create Screen GUI
 local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local FlyButton = Instance.new("TextButton")
-local UnflyButton = Instance.new("TextButton")
-local SpeedButton = Instance.new("TextButton")
-local SpeedUpButton = Instance.new("TextButton")
-local SpeedDownButton = Instance.new("TextButton")
-local InfoLabel = Instance.new("TextLabel")
-local DraggableButton = Instance.new("TextButton")
+ScreenGui.Name = "MainUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game.CoreGui
 
--- Properties of GUI
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-ScreenGui.Name = "CustomGUI"
+-- Create Main Frame
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 400, 0, 200)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
+MainFrame.BackgroundColor3 = Color3.fromRGB(128, 128, 128)  -- Gray Color
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
 
-Frame.Parent = ScreenGui
-Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Frame.Size = UDim2.new(0, 200, 0, 300)
-Frame.Position = UDim2.new(0.5, -100, 0.5, -150)
+-- Title Label
+local Title = Instance.new("TextLabel")
+Title.Text = "Brookhaven Player Control"
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.fromRGB(0, 0, 0) -- Black Color
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 24
+Title.Parent = MainFrame
 
--- Fly Button
-FlyButton.Parent = Frame
-FlyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
-FlyButton.Size = UDim2.new(1, 0, 0.2, 0)
-FlyButton.Position = UDim2.new(0, 0, 0, 0)
-FlyButton.Text = "Fly"
-FlyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+-- Close Button
+local CloseButton = Instance.new("TextButton")
+CloseButton.Text = "X"
+CloseButton.Size = UDim2.new(0, 50, 0, 50)
+CloseButton.Position = UDim2.new(1, -50, 0, 0)
+CloseButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black Color
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+CloseButton.Parent = MainFrame
 
--- Unfly Button
-UnflyButton.Parent = Frame
-UnflyButton.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
-UnflyButton.Size = UDim2.new(1, 0, 0.2, 0)
-UnflyButton.Position = UDim2.new(0, 0, 0.2, 0)
-UnflyButton.Text = "Unfly"
-UnflyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-
--- Speed Button
-SpeedButton.Parent = Frame
-SpeedButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-SpeedButton.Size = UDim2.new(1, 0, 0.2, 0)
-SpeedButton.Position = UDim2.new(0, 0, 0.4, 0)
-SpeedButton.Text = "Speed"
-SpeedButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-
--- Speed Up Button
-SpeedUpButton.Parent = Frame
-SpeedUpButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-SpeedUpButton.Size = UDim2.new(0.5, 0, 0.2, 0)
-SpeedUpButton.Position = UDim2.new(0, 0, 0.6, 0)
-SpeedUpButton.Text = "Speed Up"
-SpeedUpButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-
--- Speed Down Button
-SpeedDownButton.Parent = Frame
-SpeedDownButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-SpeedDownButton.Size = UDim2.new(0.5, 0, 0.2, 0)
-SpeedDownButton.Position = UDim2.new(0.5, 0, 0.6, 0)
-SpeedDownButton.Text = "Speed Down"
-SpeedDownButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-
--- Info Label
-InfoLabel.Parent = Frame
-InfoLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-InfoLabel.Size = UDim2.new(1, 0, 0.1, 0)
-InfoLabel.Position = UDim2.new(0, 0, 0.8, 0)
-InfoLabel.Text = "Made by ismaha08"
-InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-
--- Draggable Button
-DraggableButton.Parent = Frame
-DraggableButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-DraggableButton.Size = UDim2.new(1, 0, 0.1, 0)
-DraggableButton.Position = UDim2.new(0, 0, 0, 0)
-DraggableButton.Text = "Drag me"
-DraggableButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-
--- Function to make GUI draggable
-local function makeDraggable(gui)
-    local userInputService = game:GetService("UserInputService")
-    local dragStart, startPos
-
-    local function update(input)
-        local delta = input.Position - dragStart
-        gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-
-    gui.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragStart = input.Position
-            startPos = gui.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    userInputService.InputChanged:Disconnect()
-                end
-            end)
-            userInputService.InputChanged:Connect(update)
-        end
-    end)
-end
-
-makeDraggable(DraggableButton)
-
--- Fly and Unfly Functions
-local function fly()
-    local player = game.Players.LocalPlayer
-    local character = player.Character
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        humanoid.PlatformStand = true
-        local bodyVelocity = Instance.new("BodyVelocity")
-        bodyVelocity.Velocity = Vector3.new(0, 50, 0)
-        bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
-        bodyVelocity.Parent = character:FindFirstChild("HumanoidRootPart")
-    end
-end
-
-local function unfly()
-    local player = game.Players.LocalPlayer
-    local character = player.Character
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        humanoid.PlatformStand = false
-        for _, v in pairs(character:FindFirstChildOfClass("HumanoidRootPart"):GetChildren()) do
-            if v:IsA("BodyVelocity") then
-                v:Destroy()
-            end
-        end
-    end
-end
-
-FlyButton.MouseButton1Click:Connect(fly)
-UnflyButton.MouseButton1Click:Connect(unfly)
-
--- Speed Up and Speed Down Functions
-local speed = 16
-local function updateSpeed()
-    local player = game.Players.LocalPlayer
-    local character = player.Character
-    if character and character:FindFirstChildOfClass("Humanoid") then
-        character.Humanoid.WalkSpeed = speed
-    end
-end
-
-SpeedUpButton.MouseButton1Click:Connect(function()
-    speed = speed + 5
-    updateSpeed()
+-- Close functionality
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()  -- Close the entire UI
 end)
 
-SpeedDownButton.MouseButton1Click:Connect(function()
-    speed = speed - 5
-    updateSpeed()
+-- Player Name Input Box
+local PlayerInput = Instance.new("TextBox")
+PlayerInput.Size = UDim2.new(1, -20, 0, 50)
+PlayerInput.Position = UDim2.new(0, 10, 0, 60)
+PlayerInput.PlaceholderText = "Enter player name"
+PlayerInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+PlayerInput.TextColor3 = Color3.fromRGB(0, 0, 0)
+PlayerInput.Parent = MainFrame
+
+-- Fling Button
+local FlingButton = Instance.new("TextButton")
+FlingButton.Text = "Fling Player"
+FlingButton.Size = UDim2.new(0.45, 0, 0, 50)
+FlingButton.Position = UDim2.new(0, 10, 0, 120)
+FlingButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black Color
+FlingButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlingButton.Parent = MainFrame
+
+-- Teleport Button
+local TeleportButton = Instance.new("TextButton")
+TeleportButton.Text = "Teleport Player"
+TeleportButton.Size = UDim2.new(0.45, 0, 0, 50)
+TeleportButton.Position = UDim2.new(0.55, 0, 0, 120)
+TeleportButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black Color
+TeleportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TeleportButton.Parent = MainFrame
+
+-- Made by Label with clickable link
+local MadeByLabel = Instance.new("TextButton")
+MadeByLabel.Text = "Made by ismaha08"
+MadeByLabel.Size = UDim2.new(1, -20, 0, 30)
+MadeByLabel.Position = UDim2.new(0, 10, 0, 180)
+MadeByLabel.BackgroundTransparency = 1
+MadeByLabel.TextColor3 = Color3.fromRGB(0, 0, 0) -- Black Text
+MadeByLabel.Font = Enum.Font.SourceSansBold
+MadeByLabel.TextSize = 16
+MadeByLabel.Parent = MainFrame
+
+MadeByLabel.MouseButton1Click:Connect(function()
+    setclipboard("https://www.roblox.com/users/5509803778/profile?friendshipSourceType=PlayerSearch")  -- Copies link to clipboard
 end)
+
+-- Fling functionality
+FlingButton.MouseButton1Click:Connect(function()
+    local playerName = PlayerInput.Text
+    local targetPlayer = game.Players:FindFirstChild(playerName)
+    if targetPlayer then
+        -- Fling logic here
+        local character = targetPlayer.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            character.HumanoidRootPart.Velocity = Vector3.new(0, 1000, 0) -- Fling upwards
+        end
+    else
+        warn("Player not found!")
+    end
+end)
+
+-- Teleport functionality
+TeleportButton.MouseButton1Click:Connect(function()
+    local playerName = PlayerInput.Text
+    local targetPlayer = game.Players:FindFirstChild(playerName)
+    if targetPlayer then
+        -- Teleport logic here
+        local localPlayer = game.Players.LocalPlayer
+        local targetCharacter = targetPlayer.Character
+        if localPlayer.Character and targetCharacter then
+            localPlayer.Character:SetPrimaryPartCFrame(targetCharacter.PrimaryPart.CFrame) -- Teleport
+        end
+    else
+        warn("Player not found!")
+    end
+end)
+
+-- Execution instructions
+print("Script executed. Use UI to control players.")
