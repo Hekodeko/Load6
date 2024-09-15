@@ -1,0 +1,122 @@
+-- LocalScript inside StarterPlayerScripts
+
+-- Initialize services
+local UIS = game:GetService("UserInputService")
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+
+-- Create the main GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "FlySpeedGui"
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 200, 0, 150)
+MainFrame.Position = UDim2.new(0.5, -100, 0.5, -75)
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BackgroundTransparency = 0.5
+MainFrame.Parent = ScreenGui
+
+-- Create the Fly button
+local FlyButton = Instance.new("TextButton")
+FlyButton.Size = UDim2.new(1, 0, 0.33, 0)
+FlyButton.Position = UDim2.new(0, 0, 0, 0)
+FlyButton.Text = "Fly"
+FlyButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+FlyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlyButton.Parent = MainFrame
+
+-- Create the Unfly button
+local UnflyButton = Instance.new("TextButton")
+UnflyButton.Size = UDim2.new(1, 0, 0.33, 0)
+UnflyButton.Position = UDim2.new(0, 0, 0.33, 0)
+UnflyButton.Text = "Unfly"
+UnflyButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+UnflyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+UnflyButton.Parent = MainFrame
+
+-- Create the Speed button
+local SpeedButton = Instance.new("TextButton")
+SpeedButton.Size = UDim2.new(1, 0, 0.33, 0)
+SpeedButton.Position = UDim2.new(0, 0, 0.67, 0)
+SpeedButton.Text = "Speed: 16"
+SpeedButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+SpeedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedButton.Parent = MainFrame
+
+-- Create the text label
+local TextLabel = Instance.new("TextLabel")
+TextLabel.Size = UDim2.new(1, 0, 0.1, 0)
+TextLabel.Position = UDim2.new(0, 0, 0.9, 0)
+TextLabel.Text = "Made by ismaha08"
+TextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextScaled = true
+TextLabel.Parent = MainFrame
+
+-- Fly and Unfly logic
+local flying = false
+local flySpeed = 50
+local speed = 16
+
+local function toggleFly()
+    flying = not flying
+    if flying then
+        while flying do
+            local character = Player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.Velocity = (Mouse.Hit.p - character.HumanoidRootPart.Position).unit * flySpeed
+            end
+            wait(0.1)
+        end
+    end
+end
+
+FlyButton.MouseButton1Click:Connect(function()
+    toggleFly()
+end)
+
+UnflyButton.MouseButton1Click:Connect(function()
+    flying = false
+    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+        Player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+    end
+end)
+
+-- Speed functionality
+SpeedButton.MouseButton1Click:Connect(function()
+    speed = speed + 10
+    SpeedButton.Text = "Speed: " .. speed
+    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+        Player.Character.Humanoid.WalkSpeed = speed
+    end
+end)
+
+-- Allow the main frame to be dragged
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+local function updateDrag(input)
+    local delta = input.Position - dragStart
+    MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+MainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        updateDrag(input)
+    end
+end)
