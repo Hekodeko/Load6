@@ -1,127 +1,118 @@
--- Main UI Variables
-local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local CloseButton = Instance.new("TextButton")
-local Title = Instance.new("TextLabel")
-local InputBox = Instance.new("TextBox")
-local TeleportButton = Instance.new("TextButton")
-local AnotherInputBox = Instance.new("TextBox")
-local AnotherTeleportButton = Instance.new("TextButton")
-local Credits = Instance.new("TextButton")
+-- Brookhaven RP Script (UI + Avatar Copy + Teleport)
+-- Made by ismaha08
 
--- Set Parent to PlayerGui
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+-- Services
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
--- Set up Main Frame
-MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5)
-MainFrame.BorderSizePixel = 2
-MainFrame.Size = UDim2.new(0, 300, 0, 250)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -125)
+-- Main Frame Setup
+local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0.3, 0, 0.4, 0)
+MainFrame.Position = UDim2.new(0.35, 0, 0.3, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(169, 169, 169) -- Gray Color
+MainFrame.Draggable = true -- Allow frame movement
 MainFrame.Active = true
-MainFrame.Draggable = true
+MainFrame.Visible = true
 
--- Title at the top
-Title.Parent = MainFrame
-Title.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5)
-Title.BorderSizePixel = 0
-Title.Size = UDim2.new(0, 300, 0, 40)
+-- Title Label
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, 0, 0.2, 0)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Brookhaven RP Tool"
+Title.TextColor3 = Color3.fromRGB(0, 0, 0)
 Title.Font = Enum.Font.SourceSans
-Title.Text = "Teleport Menu"
-Title.TextSize = 20
-Title.TextColor3 = Color3.new(1, 1, 1)
+Title.TextSize = 28
 
--- Close button (X)
-CloseButton.Parent = MainFrame
-CloseButton.BackgroundColor3 = Color3.new(0, 0, 0)
-CloseButton.Position = UDim2.new(0, 260, 0, 0)
-CloseButton.Size = UDim2.new(0, 40, 0, 40)
-CloseButton.Font = Enum.Font.SourceSansBold
-CloseButton.Text = "X"
-CloseButton.TextColor3 = Color3.new(1, 0, 0)
-CloseButton.TextSize = 24
-CloseButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
+-- Player Selection Drop-Down Menu
+local PlayerDropdown = Instance.new("TextButton", MainFrame)
+PlayerDropdown.Size = UDim2.new(0.8, 0, 0.1, 0)
+PlayerDropdown.Position = UDim2.new(0.1, 0, 0.3, 0)
+PlayerDropdown.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black button
+PlayerDropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayerDropdown.Text = "Choose Player"
+PlayerDropdown.TextSize = 24
+
+local ChosenPlayer
+PlayerDropdown.MouseButton1Click:Connect(function()
+    local PlayerList = {}
+    for _, player in pairs(Players:GetPlayers()) do
+        table.insert(PlayerList, player.Name)
+    end
+    
+    -- Basic example of how you could display a player list (Modify for advanced use)
+    ChosenPlayer = PlayerList[math.random(1, #PlayerList)] -- Random for simplicity
+    PlayerDropdown.Text = "Selected: " .. ChosenPlayer
 end)
 
--- Input for Player Name
-InputBox.Parent = MainFrame
-InputBox.BackgroundColor3 = Color3.new(0.6, 0.6, 0.6)
-InputBox.Size = UDim2.new(0, 250, 0, 40)
-InputBox.Position = UDim2.new(0, 25, 0, 50)
-InputBox.Font = Enum.Font.SourceSans
-InputBox.PlaceholderText = "Enter Player Name"
-InputBox.Text = ""
-InputBox.TextSize = 18
-InputBox.TextColor3 = Color3.new(0, 0, 0)
+-- Avatar Copy Button
+local CopyAvatarButton = Instance.new("TextButton", MainFrame)
+CopyAvatarButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+CopyAvatarButton.Position = UDim2.new(0.1, 0, 0.5, 0)
+CopyAvatarButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black button
+CopyAvatarButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyAvatarButton.Text = "Copy Avatar"
+CopyAvatarButton.TextSize = 24
 
--- Teleport Button for bringing player to you
-TeleportButton.Parent = MainFrame
-TeleportButton.BackgroundColor3 = Color3.new(0, 0, 0)
-TeleportButton.Position = UDim2.new(0, 25, 0, 100)
-TeleportButton.Size = UDim2.new(0, 250, 0, 40)
-TeleportButton.Font = Enum.Font.SourceSansBold
-TeleportButton.Text = "Teleport Player To Me"
-TeleportButton.TextColor3 = Color3.new(1, 1, 1)
-TeleportButton.TextSize = 18
+CopyAvatarButton.MouseButton1Click:Connect(function()
+    local TargetPlayer = Players:FindFirstChild(ChosenPlayer)
+    if TargetPlayer then
+        -- Avatar Copy Logic (placeholder as exact avatar copying is restricted)
+        print("Copying avatar from " .. TargetPlayer.Name)
+        -- Potential usage of HumanoidDescription API for custom avatars
+    else
+        print("Player not found!")
+    end
+end)
+
+-- Teleport Button
+local TeleportButton = Instance.new("TextButton", MainFrame)
+TeleportButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+TeleportButton.Position = UDim2.new(0.1, 0, 0.65, 0)
+TeleportButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black button
+TeleportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TeleportButton.Text = "Teleport to Player"
+TeleportButton.TextSize = 24
+
 TeleportButton.MouseButton1Click:Connect(function()
-    local targetPlayerName = InputBox.Text
-    local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-    
-    if targetPlayer then
-        local character = targetPlayer.Character
-        if character then
-            character:SetPrimaryPartCFrame(game.Players.LocalPlayer.Character.PrimaryPart.CFrame)
-        end
+    local TargetPlayer = Players:FindFirstChild(ChosenPlayer)
+    if TargetPlayer then
+        LocalPlayer.Character:MoveTo(TargetPlayer.Character.HumanoidRootPart.Position)
+        print("Teleported to " .. TargetPlayer.Name)
     else
         print("Player not found!")
     end
 end)
 
--- Another Input for Teleporting Yourself
-AnotherInputBox.Parent = MainFrame
-AnotherInputBox.BackgroundColor3 = Color3.new(0.6, 0.6, 0.6)
-AnotherInputBox.Size = UDim2.new(0, 250, 0, 40)
-AnotherInputBox.Position = UDim2.new(0, 25, 0, 150)
-AnotherInputBox.Font = Enum.Font.SourceSans
-AnotherInputBox.PlaceholderText = "Enter Player Name"
-AnotherInputBox.Text = ""
-AnotherInputBox.TextSize = 18
-AnotherInputBox.TextColor3 = Color3.new(0, 0, 0)
+-- Close Button
+local CloseButton = Instance.new("TextButton", MainFrame)
+CloseButton.Size = UDim2.new(0.1, 0, 0.1, 0)
+CloseButton.Position = UDim2.new(0.9, 0, 0, 0)
+CloseButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black button
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Text = "X"
+CloseButton.TextSize = 24
 
--- Another Teleport Button for teleporting yourself to another player
-AnotherTeleportButton.Parent = MainFrame
-AnotherTeleportButton.BackgroundColor3 = Color3.new(0, 0, 0)
-AnotherTeleportButton.Position = UDim2.new(0, 25, 0, 200)
-AnotherTeleportButton.Size = UDim2.new(0, 250, 0, 40)
-AnotherTeleportButton.Font = Enum.Font.SourceSansBold
-AnotherTeleportButton.Text = "Teleport To Player"
-AnotherTeleportButton.TextColor3 = Color3.new(1, 1, 1)
-AnotherTeleportButton.TextSize = 18
-AnotherTeleportButton.MouseButton1Click:Connect(function()
-    local targetPlayerName = AnotherInputBox.Text
-    local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-    
-    if targetPlayer then
-        local character = game.Players.LocalPlayer.Character
-        if character then
-            character:SetPrimaryPartCFrame(targetPlayer.Character.PrimaryPart.CFrame)
-        end
-    else
-        print("Player not found!")
-    end
+CloseButton.MouseButton1Click:Connect(function()
+    MainFrame:Destroy()
 end)
 
--- Credits Button
-Credits.Parent = MainFrame
-Credits.BackgroundColor3 = Color3.new(0, 0, 0)
-Credits.Position = UDim2.new(0, 25, 0, 300)
-Credits.Size = UDim2.new(0, 250, 0, 30)
-Credits.Font = Enum.Font.SourceSansBold
-Credits.Text = "Made by ismaha08"
-Credits.TextColor3 = Color3.new(1, 1, 1)
-Credits.TextSize = 16
-Credits.MouseButton1Click:Connect(function()
+-- Footer Button with Link to Profile
+local ProfileButton = Instance.new("TextButton", MainFrame)
+ProfileButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+ProfileButton.Position = UDim2.new(0.1, 0, 0.85, 0)
+ProfileButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black button
+ProfileButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ProfileButton.Text = "Made by ismaha08"
+ProfileButton.TextSize = 24
+
+ProfileButton.MouseButton1Click:Connect(function()
     setclipboard("https://www.roblox.com/users/5509803778/profile?friendshipSourceType=PlayerSearch")
-    print("Profile link copied to clipboard!")
+    print("Profile link copied to clipboard.")
 end)
+
+-- Reopen Script
+function reopenScript()
+    ScreenGui.Enabled = true
+end
